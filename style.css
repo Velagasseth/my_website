@@ -1,0 +1,85 @@
+body {
+    background-color: #1e1e2f; /* modern dark background */
+    color: #c0caf5; /* light modern text */
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.terminal {
+    width: 90%;
+    max-width: 900px;
+    height: 90vh;
+    background-color: #2e2e3e; /* softer dark */
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(122, 162, 247, 0.5);
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.terminal a {
+    color: #7aa2f7;
+    text-decoration: underline;
+}
+
+.terminal a:hover {
+    color: #bb9af7;
+    text-decoration: underline;
+}
+
+#banner {
+    margin-bottom: 20px;
+}
+
+.input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.prompt {
+    margin-right: 5px;
+    color: #7aa2f7; /* prompt color - light blue */
+    font-weight: bold;
+}
+
+.input-line input {
+    background: none;
+    border: none;
+    color: #f7768e; /* pinkish input typing */
+    font-size: 1em;
+    outline: none;
+    flex-grow: 1;
+}
+
+#output {
+    flex-grow: 1;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+#output div {
+    margin-bottom: 5px;
+    color: #9ece6a; /* command output text - soft green */
+}
+
+/* Mobile optimization */
+@media (max-width: 600px) {
+    .terminal {
+        height: 95vh;
+        padding: 15px;
+    }
+
+    .input-line input {
+        font-size: 0.9em;
+    }
+
+    pre {
+        font-size: 12px;
+    }
+}
