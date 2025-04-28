@@ -33,9 +33,11 @@
             padding: 0; /* Remove padding */
             margin: 0; /* Remove margin */
             min-height: 100vh;
+            overflow: hidden; /* Disable body scrolling */
         }
 
         
+
 
 .terminal-container {
     background-color: var(--terminal-bg);
@@ -44,14 +46,35 @@
     padding: 15px;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Disable scrolling */
 }
 
 #output {
-    flex-grow: 1;
-    font-size: 14px;
-    white-space: pre-wrap;
-    word-break: break-word;
-}
+            flex-grow: 1;
+            overflow-y: auto; /* Enable vertical scrolling */
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            scrollbar-width: thin;
+            scrollbar-color: var(--prompt-color) var(--terminal-bg);
+            padding-right: 5px; /* Space for scrollbar */
+        }
+
+
+        /* Custom scrollbar for WebKit browsers */
+        #output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #output::-webkit-scrollbar-track {
+            background: var(--terminal-bg);
+        }
+
+        #output::-webkit-scrollbar-thumb {
+            background-color: var(--prompt-color);
+            border-radius: 4px;
+        }
+
 
         
         .terminal-window {
