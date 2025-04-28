@@ -32,10 +32,15 @@
         }
         
         .terminal-container {
-            width: 100%;
-            max-width: 900px;
-            height: 80vh;
+            background-color: var(--terminal-bg);
+            border-radius: 8px;
+            padding: 15px;
+            height: calc(100vh - 30px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
+
         
         .terminal-window {
             background-color: var(--terminal-bg);
@@ -90,18 +95,19 @@
         
         .prompt {
             color: var(--prompt-color);
-            margin-right: 10px;
+            margin-right: 8px;
             white-space: nowrap;
         }
+
         
         .user-command {
             color: var(--command-color);
         }
         
         .command-output {
-            margin-left: 20px;
             margin-bottom: 15px;
             white-space: pre-wrap;
+            word-break: break-word;
         }
         #help{
             color:#4ade80;
@@ -117,9 +123,9 @@
         
         .input-line {
             display: flex;
-            margin-top: 5px;
+            margin-top: auto; /* Stick to bottom */
         }
-        
+
         .input-line input {
             background: transparent;
             border: none;
@@ -128,22 +134,11 @@
             font-size: inherit;
             flex-grow: 1;
             outline: none;
-            caret-color: var(--accent-color);
         }
+
         
         /* Scrollbar styling */
-        .terminal-body::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .terminal-body::-webkit-scrollbar-track {
-            background: var(--terminal-bg);
-        }
-        
-        .terminal-body::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 4px;
-        }
+      
         /* Link styling - makes URLs clickable while maintaining terminal aesthetic */
 .terminal-link {
     color: var(--link-color, #7dd3fc); /* Light blue color */
@@ -177,6 +172,26 @@
     color: var(--link-hover-color);
     text-decoration: none;
 }
+        /* Desktop styles */
+        @media (min-width: 768px) {
+            body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .terminal-container {
+                width: 100%;
+                max-width: 800px;
+                height: 600px;
+                padding: 20px;
+            }
+
+            #output {
+                font-size: 16px;
+            }
+        }
 
 /* Mobile responsive adjustments */
 @media (max-width: 600px) {
@@ -258,7 +273,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     execute: () => typeText("⚒️Data/Projects:\n\nDetailed case studies demonstrating my approach to real-world data challenges, showcasing techniques such as regression analysis, clustering, and deep learning using pytorch\n\nUsing Scikit-learn datasets ;\n> Breast_Cancer_Dataset\n>Iris_Datasets\n> Wine_Dataset\n\n👉Link to the project https://myportfolio-iojbai9uggilvkrwjjmvvz.streamlit.app/\n\nUsing Kaggle datasets ;\n\nMade a model from kaggle datasets , gives the estimated salary pay annualy based on Age and Experience\n\n👉Link to the project https://sample2-pkjjtgzhdk7rgokdpek47e.streamlit.app/\n")
                 },
                 contact: {
-                    execute: () => typeText("Contact Information:\n\n📧Email: velagasseth@gmail.com\n📞Tel. :+254759812041\n💻 GitHub : https://github.com/Velagasseth\n🔗 Linkedin : www.linkedin.com/in/velagasseth-tech\n\nAvailable for:\n- Speaking engagements\n- Entry Level roles\n")
+                    execute: () => typeText("Contact Information:\n\n"+
+                    "📧Email: <a href='mailto:velagasseth@gmail.com' class='terminal-link'>velagasseth@gmail.com</a>\n" +
+                    "📞Tel. :+254759812041\n"+
+                    "💻 GitHub : https://github.com/Velagasseth\n"+
+                    "🔗 Linkedin : www.linkedin.com/in/velagasseth-tech\n\nAvailable for:\n- Speaking engagements\n- Entry Level roles\n")
                 },
         
         resume: {
