@@ -12,9 +12,11 @@
             --text-color: #e2e8f0;
             --accent-color: #60a5fa;
             --prompt-color: #38bdf8;
-            --command-color: #f0f9ff;
             --error-color: #f87171;
             --success-color: #4ade80;
+            --link-color: #7dd3fc;             /* Light blue for links */
+    --link-hover-color: #38bdf8;       /* Bright blue on hover */
+    --command-color: #4ade80;          /* Green for commands */
         }
         
         body {
@@ -142,6 +144,50 @@
             background: #475569;
             border-radius: 4px;
         }
+        /* Link styling - makes URLs clickable while maintaining terminal aesthetic */
+.terminal-link {
+    color: var(--link-color, #7dd3fc); /* Light blue color */
+    text-decoration: underline;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.terminal-link:hover {
+    color: var(--link-hover-color, #38bdf8); /* Brighter blue on hover */
+    text-decoration: none;
+}
+
+/* Command highlighting - used for 'help' in welcome message */
+.command {
+    color: var(--command-color, #4ade80); /* Green color */
+    font-weight: 500;
+}
+
+/* Add these to your existing :root variables */
+
+
+/* Additional styling for command output */
+.command-output a {
+    /* Ensures all links in output use terminal styling */
+    color: var(--link-color);
+    text-decoration: underline;
+}
+
+.command-output a:hover {
+    color: var(--link-hover-color);
+    text-decoration: none;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 600px) {
+    .terminal-link {
+        word-break: break-all; /* Ensures long URLs don't overflow */
+    }
+    
+    .command {
+        font-size: 0.95em; /* Slightly smaller on mobile */
+    }
+}
     </style>
 </head>
 <body>
@@ -159,56 +205,65 @@
             <div class="terminal-body" id="terminal-body">
                 <div id="output">
                     <!-- Initial content -->
-                    <div class="command-line">
-                        <span class="prompt">seth@portfolio:~$</span>
-                        <span class="user-command">cd ..</span>
-                    </div>
-                    <div class="command-output">
                 
-                        Welcome to Seth's ML terminal portfolio!<br>
-                        Type <strong id="help">'help'</strong> to see available commands!
-                     
-                    </div>
                 </div>
                 <!-- New input lines will be inserted here -->
             </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const terminalBody = document.getElementById('terminal-body');
-            const output = document.getElementById('output');
-            
-            // Command definitions
-            const commands = {
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    const terminalBody = document.getElementById('terminal-body');
+    const output = document.getElementById('output');
+    let isTyping = false;
+    let typingQueue = [];
+
+    // Initial welcome message with typing effect
+    typeText( {instant: true}, () => {
+        typeText("cd ...", {class: "user-command", instant: true}, () => {
+            typeText("Seth's ML terminal portfolio!\n\n", () => {
+                typeText(`Type <strong id="help">'help'</strong> command to see available commands!`, () => {
+                    typeText("", {class: "command"}, () => {
+                        typeText("", () => {
+                            createInputLine();
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    // Command definitions
+    const commands = {
                 help: {
                     
-                    execute: () => printOutput("Available commands:\nabout - About me\nskills - My technical skills\nexperience - my experience\nprojects - My ML projects\ncontact - Contact information\nresume - Download my resume\nclear - Clear terminal")
+                    execute: () => typeText("Available commands:\nabout - About me\nskills - My technical skills\nexperience - my experience\nprojects - My ML projects\ncontact - Contact information\nresume - Download my resume\nclear - Clear terminal")
                 },
                 about: {
                     
-                execute: () => printOutput("Hi!👋 I am Seth Odero - Junior Machine Learning Engineer\n\nPassionate data science student with a strong foundation in statistics, machine learning and data visualization seeking internship or entry level role where I can apply my analytic skills and contribute to solving complex problem using data.\nAm motivated and detail-oriented machine learning student at Kisii University with strong skills in Machine Learning, data manipulation and data visualization. \n\nSeeking an internship or entry-level position to apply my knowledge and skills in a practical environment")
+                execute: () => typeText("Hi!👋 I am Seth Odero - Junior Machine Learning Engineer\n\nPassionate data science student with a strong foundation in statistics, machine learning and data visualization seeking internship or entry level role where I can apply my analytic skills and contribute to solving complex problem using data.\nAm motivated and detail-oriented machine learning student at Kisii University with strong skills in Machine Learning, data manipulation and data visualization. \n\nSeeking an internship or entry-level position to apply my knowledge and skills in a practical environment")
                 
             },
                 skills: {
-                    execute: () => printOutput("Core Technologies:\n\n- Python, Flask\n- Seaborn, Matplotlib\n- Pandas, Numpy, Sckikit-learn, Pytorch\n- Streamlit, Jupyter Notebook\n\nDatabases:\n- MySQL, Sqlite, MicrosoftSQL\n\nOther:\n- CustomTkinter, Kivy")
+                    execute: () => typeText("Core Technologies:\n\n- Python, Flask\n- Seaborn, Matplotlib\n- Pandas, Numpy, Sckikit-learn, Pytorch\n- Streamlit, Jupyter Notebook\n\nDatabases:\n- MySQL, Sqlite, MicrosoftSQL\n\nOther:\n- CustomTkinter, Kivy")
                 },
 
                 experience: {
-                    execute: () => printOutput("Experience:\n\nKisii University (2023-Present)\n- Machine Learning Club, Kisii University\n- Organized workshops and hackathons on data science and machine learning.\n- Collaborated with peers on various machine learning projects.\n- Volunteer, Kisii County Community Center\n\nEducation:\n- Kisii University, Kisii County, Kenya Bachelor of Applied Science in Computer Science Expected Graduation: December 2027")
+                    execute: () => typeText("Experience:\n\nKisii University (2023-Present)\n- Machine Learning Club, Kisii University\n- Organized workshops and hackathons on data science and machine learning.\n- Collaborated with peers on various machine learning projects.\n- Volunteer, Kisii County Community Center\n\nEducation:\n- Kisii University, Kisii County, Kenya Bachelor of Applied Science in Computer Science Expected Graduation: December 2027")
         
                 },
                 projects: {
-                    execute: () => printOutput("⚒️Data/Projects:\n\nDetailed case studies demonstrating my approach to real-world data challenges, showcasing techniques such as regression analysis, clustering, and deep learning using pytorch\n\nUsing Scikit-learn datasets ;\n> Breast_Cancer_Dataset\n>Iris_Datasets\n> Wine_Dataset\n\n👉Link to the project https://myportfolio-iojbai9uggilvkrwjjmvvz.streamlit.app/\n\nUsing Kaggle datasets ;\n\nMade a model from kaggle datasets , gives the estimated salary pay annualy based on Age and Experience\n\n👉Link to the project https://sample2-pkjjtgzhdk7rgokdpek47e.streamlit.app/\n")
+                    execute: () => typeText("⚒️Data/Projects:\n\nDetailed case studies demonstrating my approach to real-world data challenges, showcasing techniques such as regression analysis, clustering, and deep learning using pytorch\n\nUsing Scikit-learn datasets ;\n> Breast_Cancer_Dataset\n>Iris_Datasets\n> Wine_Dataset\n\n👉Link to the project https://myportfolio-iojbai9uggilvkrwjjmvvz.streamlit.app/\n\nUsing Kaggle datasets ;\n\nMade a model from kaggle datasets , gives the estimated salary pay annualy based on Age and Experience\n\n👉Link to the project https://sample2-pkjjtgzhdk7rgokdpek47e.streamlit.app/\n")
                 },
                 contact: {
-                    execute: () => printOutput("Contact Information:\n\n📧Email: velagasseth@gmail.com\n📞Tel. :+254759812041\n💻 GitHub : https://github.com/Velagasseth\n🔗 Linkedin : www.linkedin.com/in/velagasseth-tech\n\nAvailable for:\n- Speaking engagements\n- Entry Level roles\n")
+                    execute: () => typeText("Contact Information:\n\n📧Email: velagasseth@gmail.com\n📞Tel. :+254759812041\n💻 GitHub : https://github.com/Velagasseth\n🔗 Linkedin : www.linkedin.com/in/velagasseth-tech\n\nAvailable for:\n- Speaking engagements\n- Entry Level roles\n")
                 },
         
         resume: {
             execute: () => {
-                printOutput("Initiating resume download...", "success");
+                typeText("Initiating resume download...", "success");
 
 
                 
@@ -221,13 +276,13 @@
             link.click();
             document.body.removeChild(link);
             
-            printOutput("Resume downloaded successfully!", "success");
-            printOutput("File saved as: Seth_Odero_Resume.pdf", "success");
+            typeText("Resume downloaded successfully!", "success");
+            typeText("File saved as: Seth_Odero_Resume.pdf", "success");
         }, 2500);
 
 
                 } catch (error) {
-                    printOutput("Error downloading resume: " + error.message, "error");
+                    typeText("Error downloading resume: " + error.message, "error");
                 }
             }
         },
@@ -241,86 +296,123 @@
                 }
             };
             
-            // Create initial input line
-            createInputLine();
-            
-            function createInputLine() {
-                const inputLine = document.createElement('div');
-                inputLine.className = 'input-line';
-                
-                const prompt = document.createElement('span');
-                prompt.className = 'prompt';
-                prompt.textContent = 'seth@portfolio:~$ ';
-                
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.autofocus = true;
-                
-                inputLine.appendChild(prompt);
-                inputLine.appendChild(input);
-                terminalBody.appendChild(inputLine);
-                
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        const command = input.value.trim();
-                        if (command) {
-                            // Add command to output
-                            const commandLine = document.createElement('div');
-                            commandLine.className = 'command-line';
-                            commandLine.innerHTML = `<span class="prompt">seth@portfolio:~$</span> <span class="user-command">${command}</span>`;
-                            output.appendChild(commandLine);
-                            
-                            // Process command
-                            if (commands[command]) {
-                                commands[command].execute();
-                            } else {
-                                printOutput(`Command not found: ${command}\nType 'help' for available commands, "error"`);
-                            }
-                            
-                            // Remove input line
-                            inputLine.remove();
-                            
-                            // Create new input line
-                            createInputLine();
-                            
-                            // Scroll to bottom
-                            terminalBody.scrollTop = terminalBody.scrollHeight;
-                        }
-                    }
-                });
-            }
-            
-            function printOutput(text, type = "") {
-                const outputDiv = document.createElement('div');
-                outputDiv.className = `command-output ${type}`;
-                output.appendChild(outputDiv);
+    // Core typing function
+    function typeText(text, options = {}, callback) {
+        if (typeof options === 'function') {
+            callback = options;
+            options = {};
+        }
+        
+        const {class: className, delay = 20, instant = false, element} = options;
+        const container = element || document.createElement('div');
+        container.className = `command-output ${className || ''}`;
+        container.style.whiteSpace = 'pre-wrap';
+        
+        if (!element) {
+            output.appendChild(container);
+        }
 
-                let i = 0;
-    const typingSpeed = 20; // milliseconds per character
-
-
-    
-    function typeWriter() {
-        if (i < text.length) {
-            // Add the next character
-            outputDiv.textContent += text.charAt(i);
-            i++;
-            
-            // Scroll to bottom
+        if (isTyping) {
+            typingQueue.push({text, options, callback, container});
+            return;
+        }
+        
+        isTyping = true;
+        
+        if (instant) {
+            container.innerHTML = text;
             terminalBody.scrollTop = terminalBody.scrollHeight;
-            
-            // Continue typing
-            setTimeout(typeWriter, typingSpeed);
+            isTyping = false;
+            if (callback) callback();
+            processTypingQueue();
+            return;
+        }
+
+        let i = 0;
+        const typing = () => {
+            if (i < text.length) {
+                // Handle HTML tags
+                if (text[i] === '<') {
+                    const tagEnd = text.indexOf('>', i) + 1;
+                    container.innerHTML += text.substring(i, tagEnd);
+                    i = tagEnd;
+                } else {
+                    container.innerHTML += text[i];
+                    i++;
+                }
+                
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+                setTimeout(typing, delay);
+            } else {
+                isTyping = false;
+                if (callback) callback();
+                processTypingQueue();
+            }
+        };
+        
+        typing();
+    }
+
+    function processTypingQueue() {
+        if (typingQueue.length > 0 && !isTyping) {
+            const next = typingQueue.shift();
+            typeText(next.text, next.options, next.callback, next.container);
         }
     }
-    
-    // Start the typing effect
-    typeWriter()
-            }
-;
-    }
 
-        );
-    </script>
+    function createInputLine() {
+        const inputLine = document.createElement('div');
+        inputLine.className = 'input-line';
+        
+        const prompt = document.createElement('span');
+        prompt.className = 'prompt';
+        prompt.textContent = 'seth@portfolio:~$ ';
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.autofocus = true;
+        
+        inputLine.appendChild(prompt);
+        inputLine.appendChild(input);
+        terminalBody.appendChild(inputLine);
+        
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = input.value.trim().toLowerCase();
+                if (command) {
+                    // Show entered command
+                    const cmdLine = document.createElement('div');
+                    cmdLine.className = 'command-line';
+                    cmdLine.innerHTML = `<span class="prompt">seth@portfolio:~$</span> `;
+                    
+                    const cmdText = document.createElement('span');
+                    cmdText.className = 'user-command';
+                    cmdLine.appendChild(cmdText);
+                    output.appendChild(cmdLine);
+                    
+                    // Type the command
+                    typeText(command, {element: cmdText, delay: 10}, () => {
+                        // Execute command after typing
+                        const args = command.split(' ');
+                        const cmd = args.shift();
+                        
+                        if (commands[cmd]) {
+                            commands[cmd].execute(args);
+                        } else {
+                            typeText(`Command not found. Type 'help' for available commands!. error`);
+                        }
+                        
+                        // Create new input line
+                        inputLine.remove();
+                        createInputLine();
+                    });
+                    
+                    input.value = '';
+                }
+            }
+        });
+    }
+});
+</script>
 </body>
 </html>
